@@ -1,0 +1,35 @@
+#chart {
+	height: 560px;
+	width: 560px;
+	margin: 0 auto;
+	position: relative;
+}
+
+p {
+	font-size: 12px;
+	text-align: center;
+	color: black;
+}
+
+.tooltip {
+	background: #eee;
+	box-shadow: 0 0 5px #999999;
+	color: #333;
+	font-size: 12px;
+	left: 130px;
+	padding: 10px;
+	position: absolute;
+	text-align: center;
+	top: 95px;
+	width: 80px;
+	z-index: 10;
+}
+
+rect {
+	cursor: pointer;
+	stroke-width: 2;
+}
+
+rect.disabled {
+	fill: transparent !important;
+}
