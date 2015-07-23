@@ -20,7 +20,7 @@ var pie = d3.layout.pie()
   .value(function(d) { return d.dollars; })
   .sort(null);
 
-d3.csv("candidatess.csv", function(error, dataset) {
+d3.csv("candidates.csv", function(error, dataset) {
   dataset.forEach(function(d) {
     d.dollars = +d.dollars;
   });
