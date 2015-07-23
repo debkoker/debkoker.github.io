@@ -17,12 +17,12 @@ var arc = d3.svg.arc()
   .outerRadius(radius);
 
 var pie = d3.layout.pie()
-  .value(function(d) { return d.count; })
+  .value(function(d) { return d.dollars; })
   .sort(null);
 
-d3.csv("weekdays.csv", function(error, dataset) {
+d3.csv("candidatess.csv", function(error, dataset) {
   dataset.forEach(function(d) {
-    d.count = +d.count;
+    d.dollars = +d.dollars;
   });
 
 var path = svg.selectAll("path")
@@ -31,7 +31,7 @@ var path = svg.selectAll("path")
   .append("path")
   .attr("d", arc)
   .attr("fill", function(d, i) { 
-    return color(d.data.label);
+    return color(d.data.candidate);
   });
 
 var legendRectSize = 18;
@@ -42,7 +42,7 @@ var legend = svg.selectAll(".legend")
   .enter()
   .append("g")
   .attr("class", "legend")
-  .attr("font-size", "12px")
+  .attr("font-size", "10px")
   .attr("transform", function(d, i) {
     var height = legendRectSize + legendSpacing;
     var offset =  height * color.domain().length / 2;
