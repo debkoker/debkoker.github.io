@@ -1,0 +1,78 @@
+<!--Gets list of most frequent words by MA legislators -->
+<!--from congressional record -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="javascripts/d3.min.js"></script>
+    </head>
+<body>
+<style>
+
+.chart rect {
+  fill: steelblue;
+}
+
+.chart text {
+  fill: white;
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+</style>
+<svg class="chart"></svg>
+
+<h1>MA Phrases</h1>
+<div id="id01"></div>
+
+<script>
+var xmlhttp = new XMLHttpRequest();
+var url = "http://capitolwords.org/api/1/phrases.json?entity_type=state&entity_value=MA&mincount=2&sort=count+desc&apikey=6795c13d6a2c4308bb6c20af8f9a923b";
+
+xmlhttp.onreadystatechange=function() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        myFunction(xmlhttp.responseText);
+    }
+}
+xmlhttp.open("GET", url, true);
+xmlhttp.send();
+
+</script>
+<script>
+var width = 960,
+    height = 500;
+
+
+
+var chart = d3.select(".chart")
+                .attr("width", width)
+                .attr("height", height);
+
+function myFunction(response) {
+
+    var data = JSON.parse(response);
+    var y = d3.scale.linear()
+            .range([height, 0])
+            .domain([0, d3.max(data, function(d) {return d.count;})]);
+    var barWidth = width / data.length;
+
+    var bar = chart.selectAll("g")
+            .data(data)
+            .enter().append("g")
+            .attr("transform", function(d, i) { return "translate("+ i * barWidth + ",0)"; });
+        bar.append("rect")
+            .attr("y", function(d) { return y(d.count); })
+            .attr("height", function(d) { return height - y(d.count); })
+            .attr("width", barWidth - 1);
+        bar.append("text")
+            .attr("x", barWidth / 2)
+            .attr("y", function(d) { return y(d.count + 3); })
+            .attr("dy", ".75em")
+            .text(function(d) { return d.ngram; });
+    }
+ 
+
+</script>
+
+</body>
+</html>
