@@ -3,23 +3,11 @@
 
 <!DOCTYPE html>
 <html>
+<title>Congress Words</title>
     <head>
         <script type="text/javascript" src="javascripts/d3.min.js"></script>
     </head>
 <body>
-<style>
-
-.chart rect {
-  fill: steelblue;
-}
-
-.chart text {
-  fill: white;
-  font: 10px sans-serif;
-  text-anchor: middle;
-}
-
-</style>
 <svg class="chart"></svg>
 
 <h1>MA Phrases</h1>
@@ -31,7 +19,7 @@ var url = "http://capitolwords.org/api/1/phrases.json?entity_type=state&entity_v
 
 xmlhttp.onreadystatechange=function() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        myFunction(xmlhttp.responseText);
+        readData(xmlhttp.responseText);
     }
 }
 xmlhttp.open("GET", url, true);
@@ -39,22 +27,35 @@ xmlhttp.send();
 
 </script>
 <script>
-var width = 1260,
-    height = 500;
+
 var color = d3.scale.category20b();
-
-
+var margin = {top: 20, right: 30, bottom: 100, left: 40},
+    width = 1260 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
 var chart = d3.select(".chart")
-                .attr("width", width)
-                .attr("height", height);
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-function myFunction(response) {
+
+
+function readData(response) {
 
     var data = JSON.parse(response);
     var y = d3.scale.linear()
             .range([height, 0])
             .domain([0, d3.max(data, function(d) {return d.count;})]);
+    var x = d3.scale.ordinal()
+        .domain(data.map(function(d) { return d.ngram; }))
+        .rangeBands([0, width]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+
     var barWidth = width / data.length;
 
     var bar = chart.selectAll("g")
@@ -67,14 +68,29 @@ function myFunction(response) {
             .attr("width", barWidth - 1)
             .style("fill", function(d,i) { return color(d.count); });
 
-        bar.append("text")
+        /*bar.append("text")
             .attr("x", 0-height+3)
             .attr("y", barWidth/2)
             .style("text-anchor", "start")
+            .style("font-size", "10px")
+            .style("font-family", "sans-serif")
             .attr("dy", ".15em")
             .attr("transform", function(d) { return "rotate(-90)"})
             .style("fill", "black")
-            .text(function(d) { return d.ngram; });
+            .text(function(d) { return d.ngram; }); */
+    
+    chart.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis)
+        .selectAll("text")
+            .style("font-size", "10px")
+            .style("text-anchor", "end")
+            .attr("dx", "-1em")
+            .attr("dy", "-.55em")
+            .attr("transform", function(d) { return "rotate(-65)"})
+            .style("font-family", "sans-serif")
+        ;
     }
  
 
